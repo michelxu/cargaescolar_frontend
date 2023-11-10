@@ -7,6 +7,7 @@ import DrawerTab from '../components/DrawerTab'
 const Students = () => {
   const [apiData, setApiData] = useState([]) //data {} del api call
   const [rows, setRows] = useState([]) //data filtrada de la api para insertar en la tabla
+  const [openSnack, setOpenSnack] = useState(false)
 
   const columns = [
     {
@@ -100,25 +101,13 @@ const Students = () => {
   //1. Llamado a la API
   useEffect(() => {
     fetchAllData();
-
-    //test
-    const obj = {
-      "name": "test",
-      "paternalSurname": "t",
-      "maternalSurname": "tt",
-      "email": "t.t@example.com",
-      "phone": "5552345625"
-    }
-
   }, [])
 
 
   //2. Pasar datos (de interés) del API Call (const apiData) al componente Table (const rows).
   useEffect(() => {
     let dataRows = [];
-    console.log('data from api call');
-    console.log(apiData);
-      
+
     // Check if apiData is an array before calling map
     if (Array.isArray(apiData)) {
       apiData.map((item) => {
@@ -128,9 +117,7 @@ const Students = () => {
         dataRows.push(newItem);
       });
     }
-
-    console.log('data to send to rows');
-    console.log(dataRows);
+    
     setRows([...dataRows]);
   }, [apiData])
 
@@ -157,8 +144,8 @@ const Students = () => {
     try {
       await updateItem(endpoint, id, dataToUpdate);
       
-      //Actualizar la tabla 
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -172,8 +159,8 @@ const Students = () => {
     try {
       await deleteItem(endpoint, id);
       
-      //Actualizar la tabla 
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -186,8 +173,8 @@ const Students = () => {
     try {
       await createItem(endpoint, newStudent);
       
-      //Actualizar la tabla 
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -204,6 +191,8 @@ const Students = () => {
           tableName = {'students'}
           inputs = {inputsCreateNewStudent}
           handleCreate = {handleCreate}
+          openSnack = {openSnack}
+          setOpenSnack = {setOpenSnack}
         />
       </DrawerTab>
     </Layout>

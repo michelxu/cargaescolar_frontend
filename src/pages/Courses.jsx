@@ -7,6 +7,7 @@ import DrawerTab from '../components/DrawerTab'
 const Courses = () => {
   const [apiData, setApiData] = useState([]) //data {} del API call
   const [rows, setRows] = useState([]) //data filtrada de la API para insertar en la tabla
+  const [openSnack, setOpenSnack] = useState(false)
 
   const columns = [
     {
@@ -136,8 +137,8 @@ const Courses = () => {
     try {
       await updateItem(endpoint, id, dataToUpdate);
       
-      //Actualizar la tabla 
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -151,8 +152,8 @@ const Courses = () => {
     try {
       await deleteItem(endpoint, id);
       
-      //Actualizar la tabla 
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -165,9 +166,8 @@ const Courses = () => {
     try {
       await createItem(endpoint, newCourse);
       
-      console.log(true);
-      //Actualizar la tabla
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -183,6 +183,8 @@ const Courses = () => {
             tableName = {'courses'}
             inputs = {inputsCreateNewCourse}
             handleCreate = {handleCreate}
+            openSnack = {openSnack}
+            setOpenSnack = {setOpenSnack}
           />
       </DrawerTab>
     </Layout>

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Table from '../components/Table'
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content';
 //MUI Dialog
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -10,18 +8,37 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import CustomSnackbar from '../components/CustomSnackbar';
 
-const BasePage = ({ rows, columns, tableName, inputs, handleCreate }) => {  
-  const MySwal = withReactContent(Swal);
+const BasePage = ({ rows, columns, tableName, inputs, handleCreate, openSnack, setOpenSnack }) => {  
   const title = tableName.charAt(0).toUpperCase() + tableName.slice(1);
   const modalTitle = title.slice(0, -1)
   const [open, setOpen] = useState(false); // control modal
   const [inputValues, setInputValues] = useState({}); // control inputs
+  const [errorOpen, setErrorOpen] = useState(false); // snack
 
+  //snackbar (alert)
+  const handleClose = (type) => {
+    console.log('handleClose type: ', type);
+    if (type === 'success') {
+
+      setOpenSnack(false);
+    } else if (type === 'error') {
+      setErrorOpen(false);
+    }
+  };
+
+  //modal
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
 
   const handleCreateAndClose = () => {
+    const emptyInputs = inputs.length !== Object.keys(inputValues).length;
+
+    if (emptyInputs) {
+      setErrorOpen(true)
+      return
+    }
     handleCreate(inputValues);
     handleCloseModal();
   };
@@ -41,7 +58,6 @@ const BasePage = ({ rows, columns, tableName, inputs, handleCreate }) => {
       <DialogTitle>{`Create New ${modalTitle}`}</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          {/* Your additional dialog content text goes here */}
           Description
         </DialogContentText>
         
@@ -69,25 +85,6 @@ const BasePage = ({ rows, columns, tableName, inputs, handleCreate }) => {
     </Dialog>
   </div>
   );
-  
-  //Abrir Swal Modal
-  const handleOpenCreateModal = () => {
-    MySwal.fire({
-      title: `New ${modalTitle}`,
-      html: renderModalContent(),
-      showCancelButton: true,
-      confirmButtonText: 'Create',
-      cancelButtonText: 'Cancel',
-      icon: "question"
-    }).then((result) => {
-      // Handle the result if needed
-      console.log('Cancel or Dismiss');
-      if (result.isConfirmed) {
-        console.log('result confirmed');
-        //handleClickCreate();
-      }
-    });
-  }
 
   return (
     <>
@@ -110,6 +107,20 @@ const BasePage = ({ rows, columns, tableName, inputs, handleCreate }) => {
       </div>
 
       <Table rows={rows} columns={columns} />
+      {/* snackb */}
+      <CustomSnackbar
+        type="success"
+        message="Operation successful!"
+        isOpen={openSnack}
+        onClose={handleClose}
+      />
+      <CustomSnackbar
+        type="error"
+        message="Something went wrong!"
+        isOpen={errorOpen}
+        onClose={handleClose}
+      />
+
       {/* modal */}
       {HtmlCreateModal}
     </div>

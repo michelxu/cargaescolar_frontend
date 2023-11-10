@@ -5,6 +5,7 @@ import { getItems, createItem, updateItem, deleteItem } from '../api'
 const Assignments = () => {
   const [apiData, setApiData] = useState([]) //data {} del API call
   const [rows, setRows] = useState([]) //data filtrada de la API para insertar en la tabla
+  const [openSnack, setOpenSnack] = useState(false)
 
   const columns = [
     {
@@ -133,8 +134,8 @@ const Assignments = () => {
     try {
       await updateItem(endpoint, id, dataToUpdate);
       
-      //Actualizar la tabla 
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -148,8 +149,8 @@ const Assignments = () => {
     try {
       await deleteItem(endpoint, id);
       
-      //Actualizar la tabla 
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -162,8 +163,8 @@ const Assignments = () => {
     try {
       await createItem(endpoint, newAssignment);
       
-      //Actualizar la tabla 
-      fetchAllData();
+      fetchAllData(); //actualizar la tabla 
+      setOpenSnack(true); //snack
     } catch (error) {
       console.error('Error fetch: ', error);
     }
@@ -177,6 +178,8 @@ const Assignments = () => {
       tableName = {'assignments'}
       inputs = {inputsCreateNewAssignment}
       handleCreate = {handleCreate}
+      openSnack = {openSnack}
+      setOpenSnack = {setOpenSnack}
     />
     </>
   )

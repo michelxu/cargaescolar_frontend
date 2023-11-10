@@ -6,6 +6,7 @@ const Table = ({ rows, columns }) => {
   return (
     <div className='flex flex-col'>
       <DataGrid
+      autoHeight
       rows={rows}
       columns={columns}
       initialState={{
